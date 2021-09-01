@@ -1,0 +1,65 @@
+
+{% extends 'base_site.html' %}
+
+{% block nav-global %}
+
+
+<div class="mx-auto">
+ <div class="card text-center">
+    <h3 class="card-header">
+    Season {{selected_year}} Highlights
+    </h3>
+    <div class="card-body">
+
+    <div class="row">
+      <div class="col-md-12">
+          <h3>Top 4 Teams</h3>
+          <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                  <th class="text-center">Team Name</th>
+                  
+                  <th class="text-center">No of Victories</th>
+              </tr>
+              </thead>
+              {% for item in winners %}
+              <tr> 
+                  <td>{{ item.winner }}</td>
+                  <td>{{ item.total }}</td>
+              </tr>
+              {% endfor %}
+          </table>
+        </div>
+      </div>
+        <div class="card-text">
+            <h4>Team {{ toss_winner_max.toss_winner }} won most number of tosses ({{ toss_winner_max.total }}) in the {{toss_winner_max.season}} season</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ player_of_match.player_of_match }} won most number of player of match award ({{ player_of_match.total }}) in the whole season</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ maximum_winner.winner }} won most number of matches ({{ maximum_winner.total }}) in the whole season</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ winning_location_max.winner }} won most number of matches ({{ winning_location_max.total }})  from {{ winning_location_max.venue }} in the whole season</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ average_to_decide_to_bat }} % of teams decided to bat after winning the toss</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ maximum_no_venue.venue__max }} hosted most number of matches</h4>
+        </div>
+        <div class="card-text">
+            <h4>{{ team_which_won_with_maximum_runs.winner }} won with {{ team_which_won_with_maximum_runs.win_by_runs }} is the season record.</h4>
+        </div>
+    </div>
+</div>   
+</div>
+
+  
+<div class="footer-copyright text-center py-3">
+    © 2020 Copyright:
+    <a href="github.com/jobiaj">Github/JobiAJ</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="navbar">
+  <a href="{% url 'year_summary' selected_year %}">Home</a>
+  <a href="{% url 'charts' selected_year %}">Charts</a>
+</div>
+<div class="header">
+  <h1>IPL Analyser</h1>
+
+<select id="years" class="form-select" style="color:black">
+ {% if selected_year == 0 %}
+ <option>--Please Select --</option>
+ {% else %}
+ <option value={{selected_year}} selected="selected">{{ selected_year }}</option>
+ {% endif %}
+ {% for year in years %}
+ <option value={{ year.season }}>{{ year.season }}</option>
+ {% endfor %}
+</select>
+
+
+<script type="text/javascript">
+
+    $("#years").change(function () {
+        var year = $(this).val();
+        var url = "{% url 'year_summary' 0 %}";
+        url = url.replace('0', year);
+        window.location.href = url;
+    });
+</script>
+
+
+</div>
+{% block nav-global %}{% endblock %}
+
+
+{% endblock %}

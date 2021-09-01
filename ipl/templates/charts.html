@@ -1,0 +1,184 @@
+{% extends 'base_site.html' %}
+
+{% block nav-global %}
+
+<div class="row">
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Team Vs Win</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="team-vs-win"></canvas>
+  </div>
+
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Team Vs Toss Win</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="toss-winner"></canvas>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Player of Match Vs Player</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="player_of_match"></canvas>
+  </div>
+
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Venue Vs Win</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="venue"></canvas>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Toss Decision</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="toss-decision"></canvas>
+  </div>
+
+  <div class="col-md-6">
+    <h2 style="text-align: center;">Won by score</h2>
+    <canvas width="200" height="100" style="border:1px solid #000000;" id="won-by-score"></canvas>
+  </div>
+
+</div>
+
+  <script>
+    var dynamicColors = function(data) {
+        var colorArray = [];
+        for (i = 0; i < data.length; i++) {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            var color = "rgb(" + r + "," + g + "," + b + ")"; 
+            colorArray.push(color);
+        }
+        return colorArray
+    }
+
+
+    var winner_config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: {{ winner.data|safe }},
+          backgroundColor: dynamicColors({{ winner.data|safe }}),
+          label: 'Winning Graph for season'
+        }],
+        labels: {{ winner.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var toss_winner_config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: {{ toss_winner.data|safe }},
+          backgroundColor: dynamicColors({{ toss_winner.data|safe }}),
+          label: 'Winning Graph for season'
+        }],
+        labels: {{ toss_winner.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var player_of_match_config = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ player_of_match.data|safe }},
+          backgroundColor: dynamicColors({{ player_of_match.data|safe }}),
+          borderWidth: 1,
+          label: 'Player of match'
+        }],
+        labels: {{ player_of_match.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var venue_config = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ venue.data|safe }},
+        backgroundColor: dynamicColors({{ venue.data|safe }}),
+        borderColor: [
+            'rgba(255,99,132,1)'
+          ],
+        borderWidth: 1,
+        label: 'Venue Vs Win'
+        }],
+        labels: {{ venue.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var toss_decision_config = {
+      type: 'horizontalBar',
+      data: {
+        datasets: [{
+          data: {{ toss_decision.data|safe }},
+        backgroundColor: dynamicColors({{ toss_decision.data|safe }}),
+        borderColor: [
+            'rgba(255,99,132,1)'
+          ],
+        borderWidth: 1,
+        label: 'Toss decision'
+        }],
+        labels: {{ toss_decision.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var wonByConfig = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ win_by_runs.data|safe }},
+        backgroundColor: dynamicColors({{ win_by_runs.data|safe }}),
+        borderColor: [
+            'rgba(255,99,132,1)'
+          ],
+        borderWidth: 1,
+        label: 'Win by Runs'
+        }],
+        labels: {{ win_by_runs.labels|safe }}
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('team-vs-win').getContext('2d');
+      var mychart = new Chart(ctx, winner_config);
+
+      var ctx = document.getElementById('toss-winner').getContext('2d');
+      var mychart2 = new Chart(ctx, toss_winner_config);
+
+      var ctx = document.getElementById('player_of_match').getContext('2d');
+      var mychart2 = new Chart(ctx, player_of_match_config);
+
+      var ctx = document.getElementById('venue').getContext('2d');
+      var mychart2 = new Chart(ctx, venue_config);
+
+      var ctx = document.getElementById('toss-decision').getContext('2d');
+      var mychart2 = new Chart(ctx, toss_decision_config);
+
+
+      var ctx = document.getElementById('won-by-score').getContext('2d');
+      var mychart2 = new Chart(ctx, wonByConfig);
+    };
+
+  </script>
+
+{% endblock %}
