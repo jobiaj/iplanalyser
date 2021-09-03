@@ -52,17 +52,17 @@ Second, we need to update the database information in the settings.py. I have ad
 Running the application in local:
 
 
-git clone https://github.com/jobiaj/iplanalyser.git
+1. git clone https://github.com/jobiaj/iplanalyser.git
 
-Create database and update the db details in settings.py.
+2. Create database and update the db details in settings.py.
 
-Create the virtual environment, and activate the environment.
+3. Create the virtual environment, and activate the environment.
 
-pip install -r requirements.txt
+4. pip install -r requirements.txt
 
-move to the base folder where manage.py located and run python manage.py migrate
+5. move to the base folder where manage.py located and run python manage.py migrate
 
-Then we need to load the data to the database from the csv. 
+6. Then we need to load the data to the database from the csv. 
 Run:
 python manage.py load_match
 python manage.py load_deliveries
@@ -77,4 +77,4 @@ Open your browser and go to http://127.0.0.1:8000/iplanalyser, you will be greet
 
 You can see the demo of the application in:
 
-https://iplanalyser.herokuapp.com/iplanalyser/
+Application Demo: https://iplanalyser.herokuapp.com/iplanalyser/
