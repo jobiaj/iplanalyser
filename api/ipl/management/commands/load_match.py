@@ -9,7 +9,6 @@ from django.db import transaction
 
 
 
-from collections import defaultdict
 from django.apps import apps
 
 

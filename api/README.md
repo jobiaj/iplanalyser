@@ -1,4 +1,16 @@
+
 IplAnalyser quickstart: Django
+
+
+This application can brought up using docker compose up.
+
+If you have docker-compose is available in your local pull the code and move to base directory and run
+sudo docker-compose up --build to bring up the application.
+
+You can go to the browser after that application comes up.: http://localhost:8000/iplanalyser/year_summary/(%3FP2013%5Cd+)/
+
+
+Please follow following steps the conventional way to bring the application Up:
 
 This is a Django project that will fetch the data from the csv and display the highlights and graphs based on selected seasons.
 

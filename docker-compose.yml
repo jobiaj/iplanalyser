@@ -1,20 +1,40 @@
-version: "3.9"
-   
+version: '3'
+
 services:
   db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+    image: postgres:11-alpine
+    restart: always
     environment:
       - POSTGRES_DB=postgres1
       - POSTGRES_USER=postgres1
       - POSTGRES_PASSWORD=postgres1
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8005
+    ports:
+      - "5432:5432"
+  django:
+    build: ./api
+    restart: always
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
-      - .:/code
+      - ./api:/app/api
     ports:
       - "8000:8000"
     depends_on:
+      - load_data
+      - migration
+      - db
+  migration:
+    build: ./api
+    restart: always
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    volumes:
+      - ./api:/app/api
+    depends_on:
+      - db
+  load_data:
+    build: ./api
+    command: ["python", "manage.py", "load_match", "--noinput"]
+    volumes:
+      - ./api:/app/api
+    depends_on:
+      - migration
       - db
