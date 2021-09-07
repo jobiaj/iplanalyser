@@ -1,13 +1,12 @@
 from django.shortcuts import render
-
-from django.shortcuts import render
-
-from ipl.models import Match, Deliveries
 from django.db.models import Count, Avg, Max, Min, Sum
+
+from ipl.services import SeasonService, MatchService
 
 
 def ipl_analyser(request):
-    years = Match.objects.values('season').distinct()
+
+    years = MatchService._get_all_seasons()
     context = {
         "years": years,
         "selected_year": 0
@@ -17,13 +16,16 @@ def ipl_analyser(request):
 
 
 def year_summary(request, year):
-    years = Match.objects.exclude(season=year).values('season').distinct()
-    season_matches = Match.objects.filter(season=year)
-    total_count = season_matches.count()
-    winner_group = season_matches.values('winner').annotate(total=Count('winner')).order_by('-total')
-    toss_winner_max = season_matches.values('toss_winner').annotate(total=Count('toss_winner')).order_by('-total').first()
-    player_of_match_max = season_matches.values('player_of_match').annotate(total=Count('player_of_match')).order_by('-total').first()
-    maximum_winner = season_matches.values('winner').annotate(total=Count('winner')).order_by('-total').first()
+    season_service = SeasonService(year)
+
+    years = MatchService._get_all_matches().exclude(season=year).values('season').distinct()
+    season_matches = season_service._get_all_matches()
+    total_count = season_service._count_of_matches()
+    winner_group = season_service.get_sorted_list_based_field(field='winner', order_by='Decending', limit=4)
+
+    toss_winner_max =  season_service.get_sorted_list_based_field(field='toss_winner', order_by='Decending').first()
+    player_of_match_max = season_service.get_sorted_list_based_field(field='player_of_match', order_by='Decending').first()
+    maximum_winner = winner_group.first()
     winning_location_max = season_matches.values('winner', 'venue').annotate(total=Count('winner')).order_by('-total').first()
     toss_descision = season_matches.filter(toss_decision='bat').values('toss_decision').annotate(total=Count('toss_decision')).order_by('-total').first()
     average_to_decide_to_bat = (toss_descision['total'] / total_count) * 100
@@ -33,7 +35,7 @@ def year_summary(request, year):
 
     context = {
         "years": years,
-        "winners": winner_group[0:4],
+        "winners": winner_group,
         "toss_winner_max": toss_winner_max,
         "player_of_match": player_of_match_max,
         "maximum_winner": maximum_winner,
@@ -46,25 +48,24 @@ def year_summary(request, year):
 
     return render(request, "analysis.html", context)
 
-def get_required_data(season_matches):
-    
-    winner_group = season_matches.values('winner').annotate(total=Count('winner')).order_by('-total')
-    toss_winner_group = season_matches.values('toss_winner').annotate(total=Count('toss_winner')).order_by('-total')
-    player_of_match = season_matches.values('player_of_match').annotate(total=Count('player_of_match')).order_by('-total')
+def charts(request, year):
+    season_service = SeasonService(year)
+
+    years = MatchService._get_all_matches().exclude(season=year).values('season').distinct()
+
+    season_matches = season_service._get_all_matches()
+    winner_group = season_service.get_sorted_list_based_field(field='winner', order_by='Decending')
+    toss_winner_group = season_service.get_sorted_list_based_field(field='toss_winner', order_by='Decending')
+    player_of_match = season_service.get_sorted_list_based_field(field='player_of_match', order_by='Decending')
+    toss_descision = season_service.get_sorted_list_based_field(field='toss_decision', order_by='Decending')
     winning_location = season_matches.values('winner', 'venue').annotate(total=Count('winner')).order_by('-total')
-    toss_descision = season_matches.values('toss_decision').annotate(total=Count('toss_decision')).order_by('-total')
-    data = {"winner": winner_group, "toss_winner": toss_winner_group, 
+ 
+    data = {"winner": winner_group, 
+            "toss_winner": toss_winner_group, 
             "player_of_match": player_of_match,
             "venue": winning_location,
             "toss_decision": toss_descision}
-    return data
 
-
-def charts(request, year):
-    years = Match.objects.values('season').distinct()
-    season_matches = Match.objects.filter(season=year)
-
-    data = get_required_data(season_matches)
     response = {
         "years": years,
         "selected_year": year

@@ -13,28 +13,11 @@ services:
   django:
     build: ./api
     restart: always
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    command : bash -c "python manage.py migrate && python manage.py load_match &&
+                  python manage.py runserver 0.0.0.0:8000" 
     volumes:
       - ./api:/app/api
     ports:
       - "8000:8000"
     depends_on:
-      - load_data
-      - migration
-      - db
-  migration:
-    build: ./api
-    restart: always
-    command: ["python", "manage.py", "migrate", "--noinput"]
-    volumes:
-      - ./api:/app/api
-    depends_on:
-      - db
-  load_data:
-    build: ./api
-    command: ["python", "manage.py", "load_match", "--noinput"]
-    volumes:
-      - ./api:/app/api
-    depends_on:
-      - migration
       - db
